@@ -4095,16 +4095,7 @@ var AblePlayerInstances = [];
 					if (this.iconType === 'font') {
 						$pipe.addClass('icon-pipe');
 					}
-					else {
-						$pipeImg = $('<img>', {
-							src: this.rootPath + 'button-icons/' + this.iconColor + '/pipe.png',
-							alt: '',
-							role: 'presentation'
-						});
-						$pipe.append($pipeImg);
-					}
-					$controllerSpan.append($pipe);
-				}
+					
 				else {
 					// this control is a button
 					if (control === 'volume') {
