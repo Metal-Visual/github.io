@@ -764,6 +764,10 @@ var AblePlayerInstances = [];
 				svg[1] = 'M10.001 7.8c-1.215 0-2.201 0.985-2.201 2.2s0.986 2.2 2.201 2.2c1.215 0 2.199-0.985 2.199-2.2s-0.984-2.2-2.199-2.2zM3.001 7.8c-1.215 0-2.201 0.985-2.201 2.2s0.986 2.2 2.201 2.2c1.215 0 2.199-0.986 2.199-2.2s-0.984-2.2-2.199-2.2zM17.001 7.8c-1.215 0-2.201 0.985-2.201 2.2s0.986 2.2 2.201 2.2c1.215 0 2.199-0.985 2.199-2.2s-0.984-2.2-2.199-2.2z';
 				break;
 
+			case 'pipe':
+				svg[0] = '0 0 20 20';
+				svg[1] = 'M10.15 0.179h0.623c0.069 0 0.127 0.114 0.127 0.253v19.494c0 0.139-0.057 0.253-0.127 0.253h-1.247c-0.069 0-0.126-0.114-0.126-0.253v-19.494c0-0.139 0.057-0.253 0.126-0.253h0.623z';
+				break;
 
 			case 'captions':
 				svg[0] = '0 0 20 20';
@@ -1012,7 +1016,7 @@ var AblePlayerInstances = [];
 				this.iconType = 'image';
 			}
 			if (this.debug) {
-				
+				console.log('Using ' + this.iconType + 's for player controls');
 			}
 			if (typeof $tempButton !== 'undefined') {
 				$tempButton.remove();
@@ -1327,15 +1331,15 @@ var AblePlayerInstances = [];
 					    switch (error.name) {
 						    case 'InvalidTrackLanguageError':
 							    // no track was available with the specified language
-                  
+                  console.log('No ' + track.kind + ' track is available in the specified language (' + track.label + ')');
                   break;
                 case 'InvalidTrackError':
 							    // no track was available with the specified language and kind
-                  
+                  console.log('No ' + track.kind + ' track is available in the specified language (' + track.label + ')');
                   break;
                 default:
 							    // some other error occurred
-                  
+                  console.log('Error loading ' + track.label + ' ' + track.kind + ' track');
                   break;
     		      }
 				    });
@@ -1345,7 +1349,7 @@ var AblePlayerInstances = [];
             this.vimeoPlayer.disableTextTrack().then(function() {
     			    // Vimeo captions disabled
   			    }).catch(function(error) {
-              
+              console.log('Error disabling Vimeo text track: ',error);
             });
 			    }
         }
@@ -2307,10 +2311,10 @@ var AblePlayerInstances = [];
 			errString += 'Column: ' + parserState.column + '\n';
 			errString += err;
 			if (console.warn) {
-				
+				console.warn(errString);
 			}
 			else if (console.log) {
-				
+				console.log(errString);
 			}
 		}
 		return parserState;
@@ -2496,10 +2500,10 @@ var AblePlayerInstances = [];
 				errString += 'Column: ' + state.column + '\n';
 				errString += 'Expected cue timing for cueId \''+cueId+'\' but found: ' + nextLine + '\n';
 				if (console.warn) {
-					
+					console.warn(errString);
 				}
 				else if (console.log) {
-					
+					console.log(errString);
 				}
 				return; // Return leaving line for parseCuesAndComments to handle
 			}
@@ -4095,7 +4099,16 @@ var AblePlayerInstances = [];
 					if (this.iconType === 'font') {
 						$pipe.addClass('icon-pipe');
 					}
-					
+					else {
+						$pipeImg = $('<img>', {
+							src: this.rootPath + 'button-icons/' + this.iconColor + '/pipe.png',
+							alt: '',
+							role: 'presentation'
+						});
+						$pipe.append($pipeImg);
+					}
+					$controllerSpan.append($pipe);
+				}
 				else {
 					// this control is a button
 					if (control === 'volume') {
@@ -4933,7 +4946,7 @@ var AblePlayerInstances = [];
 			// return the name of the control with first letter in upper case
 			// ultimately will need to get a translated label from this.tt
 			if (this.debug) {
-				
+				console.log('Found an untranslated label: ' + control);
 			}
 			return control.charAt(0).toUpperCase() + control.slice(1);
 		}
@@ -5311,7 +5324,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 		$tempDiv.load(src, function (trackText, status, req) {
 			if (status === 'error') {
 				if (thisObj.debug) {
-					
+					console.log ('error reading file ' + src + ': ' + status);
 				}
 				deferred.fail();
 			}
@@ -5683,7 +5696,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 					deferred.resolve();
 			})
 			.fail(function(){
-				
+				console.log('Unable to initialize Google API. YouTube captions are currently unavailable.');
 			});
 		}
 		else {
@@ -5814,8 +5827,8 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 								// Should still proceed, but with captions disabled
 								// The specific error, if needed: reason.result.error.message
 								// If no captions, the error is: "The video identified by the <code>videoId</code> parameter could not be found."
-								
-								
+								console.log('Error retrieving captions.');
+								console.log('Check your video on YouTube to be sure captions are available and published.');
 								thisObj.hasCaptions = false;
 								thisObj.usingYouTubeCaptions = false;
 								deferred.resolve();
@@ -5918,7 +5931,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 				}
 			},
 			error: function(xhr, status) {
-				
+				console.log('Error retrieving YouTube caption data for video ' + youTubeId);
 				deferred.resolve();
 			}
 		});
@@ -7723,11 +7736,11 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 			this.userAgent.os = "Linux";
 		}
 		if (this.debug) {
-			
-			
-			
-			
-			
+			console.log('User agent:' + navigator.userAgent);
+			console.log('Vendor: ' + navigator.vendor);
+			console.log('Browser: ' + this.userAgent.browser.name);
+			console.log('Version: ' + this.userAgent.browser.version);
+			console.log('OS: ' + this.userAgent.os);
 		}
 	};
 
@@ -7735,7 +7748,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 
 		var userAgent = navigator.userAgent.toLowerCase();
 		if (this.debug) {
-			
+			console.log('User agent: ' + userAgent);
 		}
 		if (userAgent.indexOf(which.toLowerCase()) !== -1) {
 			return true;
@@ -8871,7 +8884,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 			currentRate = this.getPlaybackRate();
 			index = rates.indexOf(currentRate);
 			if (index === -1) {
-				
+				console.log('ERROR: Youtube returning unknown playback rate ' + currentRate.toString());
 			}
 			else {
 				index += dir;
@@ -9816,15 +9829,15 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 					switch (error.name) {
 						case 'InvalidTrackLanguageError':
 							// no track was available with the specified language
-							
+							console.log('No ' + track.kind + ' track is available in the specified language (' + track.label + ')');
 							break;
 						case 'InvalidTrackError':
 							// no track was available with the specified language and kind
-							
+							console.log('No ' + track.kind + ' track is available in the specified language (' + track.label + ')');
 							break;
 						default:
 							// some other error occurred
-							
+							console.log('Error loading ' + track.label + ' ' + track.kind + ' track');
 							break;
     				}
 				});
@@ -11791,16 +11804,16 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 		$thisElement = $(document.activeElement);
 
     if (which === 27) { // escape
-
+console.log('onPlayerKeyPress, you pressed Escape');
       if ($.contains(this.$transcriptArea[0],$thisElement[0])) {
-
+console.log('element is part of the transcript area');
         // This element is part of transcript area.
         this.handleTranscriptToggle();
         return false;
       }
     }
 		if (!this.okToHandleKeyPress()) {
-
+console.log('NOT ok!');
 			return false;
 		}
 
@@ -11817,7 +11830,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 			e.target.tagName === 'SELECT'
 		)){
 			if (which === 27) { // escape
-
+console.log('You pushed ESC');
 				this.closePopups();
 			}
 			else if (which === 32) { // spacebar = play/pause
@@ -12063,23 +12076,23 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 			.on('volumechange',function() {
 				thisObj.volume = thisObj.getVolume();
 				if (thisObj.debug) {
-					
+					console.log('media volume change to ' + thisObj.volume + ' (' + thisObj.volumeButton + ')');
 				}
 			})
 			.on('error',function() {
 				if (thisObj.debug) {
 					switch (thisObj.media.error.code) {
 						case 1:
-							
+							console.log('HTML5 Media Error: MEDIA_ERR_ABORTED');
 							break;
 						case 2:
-							
+							console.log('HTML5 Media Error: MEDIA_ERR_NETWORK ');
 							break;
 						case 3:
-							
+							console.log('HTML5 Media Error: MEDIA_ERR_DECODE ');
 							break;
 						case 4:
-							
+							console.log('HTML5 Media Error: MEDIA_ERR_SRC_NOT_SUPPORTED ');
 							break;
 					}
 				}
@@ -13251,12 +13264,12 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
     		  // Therefore, sign language as rendered by Able Player unfortunately won't work
           this.hasSignLanguage = false;
           if (this.debug) {
-            
+            console.log('Sign language has been disabled due to IOS restrictions');
           }
         }
         else {
   				if (this.debug) {
-	  				
+	  				console.log('This video has an accompanying sign language video: ' + this.signFile);
           }
           this.hasSignLanguage = true;
           this.injectSignPlayerCode();
@@ -14359,7 +14372,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 					else {
 						msg = lang + ' is not currently supported. Using default language (' + this.lang + ')';
 						if (this.debug) {
-							
+							console.log(msg);
 						}
 					}
 				}
@@ -15974,7 +15987,7 @@ if (thisObj.useTtml && (trackSrc.endsWith('.xml') || trackText.startsWith('<?xml
 					deferred.resolve();
 			})
 			.fail(function(){
-				
+				console.log('Unable to initialize Google API. YouTube captions are currently unavailable.');
 			});
 		}
 		else {
