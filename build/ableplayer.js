@@ -3184,7 +3184,7 @@ var AblePlayerInstances = [];
 		this.$durationContainer = $('<span>',{
 			'class': 'able-duration'
 		});
-		this.$timer.append(this.$durationContainer);
+		this.$timer.append(this.$elapsedTimeContainer).append(this.$durationContainer);
 
 		this.$speed = $('<span>',{
 			'class' : 'able-speed',
