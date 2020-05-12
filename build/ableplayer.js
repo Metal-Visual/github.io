@@ -981,7 +981,7 @@ var AblePlayerInstances = [];
 				}
 				else {
 					$tempButton = $('<span>',{
-						'class': 'icon-play able-clipped'
+						'class': 'icon-play able-clipped control-play'
 					});
 					$('body').append($tempButton);
 					$testButton = $tempButton;
