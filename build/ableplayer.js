@@ -3462,16 +3462,16 @@ var AblePlayerInstances = [];
             'tabindex': '-1'
 				  });
           prefCat = this.prefCats[i];
-          if (prefCat === 'captions') {
+          if (prefCat === ' ') {
 					  $menuItem.text(this.tt.prefMenuCaptions);
 				  }
-          else if (prefCat === 'descriptions') {
+          else if (prefCat === ' ') {
 					  $menuItem.text(this.tt.prefMenuDescriptions);
 				  }
           else if (prefCat === 'keyboard') {
 					  $menuItem.text(this.tt.prefMenuKeyboard);
 				  }
-          else if (prefCat === 'transcript') {
+          else if (prefCat === ' ') {
 					  $menuItem.text(this.tt.prefMenuTranscript);
 				  }
           $menuItem.on('click',function() {
